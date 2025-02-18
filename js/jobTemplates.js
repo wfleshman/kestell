@@ -203,6 +203,7 @@ class JobTemplates {
     handleBuild(event) {
         const index = event.target.dataset.index;
         const template = this.templates[index];
+        localStorage.setItem('template-name', template.name);
 
         // Fetch the inventory data directly using a database transaction
         const transaction = db.transaction(["inventory"], "readonly");

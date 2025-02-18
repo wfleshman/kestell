@@ -75,7 +75,12 @@ function exportDB() {
 
         const a = document.createElement('a');
         a.href = url;
-        a.download = 'kims_database.json';
+        const date = new Date();
+        let day = date.getDate();
+        let month = date.getMonth() + 1;
+        let year = date.getFullYear();
+        let currentDate = `${month}-${day}-${year}-`;
+        a.download = currentDate+'kims_db.json';
         document.body.appendChild(a);
         a.click();
         document.body.removeChild(a);

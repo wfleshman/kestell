@@ -1,5 +1,4 @@
 function approveBuild() {
-
     // stuff to do while waiting
     let button = document.getElementById("approve-button");
     button.disabled = true;
@@ -127,7 +126,11 @@ function download_dxfs(dxfs) {
         const url = URL.createObjectURL(blob);
         const a = document.createElement('a');
         a.href = url;
-        a.download = 'dxfs.zip';
+        let name = localStorage.getItem('template-name');
+        if (name){
+            a.download = name+'.zip'
+        } else{a.download = 'dxfs.zip';}
+        
         document.body.appendChild(a);
         a.click();
         document.body.removeChild(a);
