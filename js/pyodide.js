@@ -9,7 +9,7 @@ async function initializePyodide() {
     // Load any necessary Python packages
     await pyodide.loadPackage("micropip");
     const micropip = pyodide.pyimport("micropip");
-    await micropip.install('https://fleshman.dev/kestell/rectpack-0.2.2-py3-none-any.whl');
+    await micropip.install('rectpack-0.2.2-py3-none-any.whl');
     await micropip.install('ezdxf==1.3.5')
 
     // Set the flag to indicate Pyodide is ready
