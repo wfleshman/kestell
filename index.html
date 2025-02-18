@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>KIMS - Inventory</title>
+    <link rel="icon" type="image/x-icon" href="images/poker.ico">
+    <link rel="stylesheet" href="css/styles.css">
+    <script src="https://cdn.jsdelivr.net/pyodide/v0.21.3/full/pyodide.js"></script>
+</head>
+<body>
+    <div id="app">
+        <header>
+            <img src="images/kestell.png" alt="Kestell Logo" id="logo">
+            <h1>Kestell Inventory Management System</h1>
+            <div id="db-controls">
+                <button id="export-db-btn">Export DB</button>
+                <input type="file" id="import-db-input" style="display: none;">
+                <button id="import-db-btn">Import DB</button>
+            </div>
+        </header>
+
+        <section>
+            <h2>Job Templates</h2>
+            <div id="template-controls">
+                <input type="text" id="search-templates" placeholder="Search Templates...">
+                <input type="text" id="template-name-input" placeholder="Template Name">
+                <button id="add-template-btn">Add Template</button>
+            </div>
+            <div id="job-templates-container"></div>
+        </section>
+
+        <section>
+            <h2>Inventory Management</h2>
+            <div id="inventory-controls">
+                <input type="number" step="0.01" id="width-input" placeholder="Width">
+                <input type="number" step="0.01" id="height-input" placeholder="Height">
+                <input type="number" id="qty-input" placeholder="Quantity">
+                <button id="add-inventory-btn">Add Inventory</button>
+            </div>
+            <div id="inventory-table-container"></div>
+        </section>
+    </div>
+    <script src="js/database.js"></script>
+    <script src="js/inventoryTable.js"></script>
+    <script src="js/jobTemplates.js"></script>
+    <script src="js/pyodide.js"></script>
+    <script src="js/packing.js"></script>
+    <script>
+        let dbReady = false;
+
+        function initApp() {
+            const inventoryContainer = document.getElementById('inventory-table-container');
+            const jobTemplatesContainer = document.getElementById('job-templates-container');
+
+            const inventoryTable = new InventoryTable();
+            inventoryTable.render(inventoryContainer);
+
+            const jobTemplates = new JobTemplates();
+            jobTemplates.render(jobTemplatesContainer);
+
+            document.getElementById('add-inventory-btn').addEventListener('click', () => {
+                const width = parseFloat(document.getElementById('width-input').value);
+                const height = parseFloat(document.getElementById('height-input').value);
+                const qty = parseInt(document.getElementById('qty-input').value, 10);
+
+                if (isNaN(width) || width <= 0 || (isNaN(height) && height !== '') || isNaN(qty) || qty <= 0) {
+                    alert('Please enter valid positive numbers for width, height, and quantity.');
+                    return;
+                }
+
+                const displayHeight = isNaN(height) ? '' : height;
+                const [displayWidth, sortedHeight] = [width, displayHeight].sort((a, b) => b - a);
+
+                inventoryTable.addItem({ width: displayWidth, height: sortedHeight, qty });
+
+                // Clear input fields
+                document.getElementById('width-input').value = '';
+                document.getElementById('height-input').value = '';
+                document.getElementById('qty-input').value = '';
+            });
+
+            document.getElementById('add-template-btn').addEventListener('click', () => {
+                const templateName = document.getElementById('template-name-input').value;
+                if (templateName) {
+                    jobTemplates.addTemplate(templateName);
+                    // Clear input field
+                    document.getElementById('template-name-input').value = '';
+                } else {
+                    alert('Please enter a valid template name.');
+                }
+            });
+
+            document.getElementById('search-templates').addEventListener('input', () => {
+                jobTemplates.filterTemplates(document.getElementById('search-templates').value);
+            });
+
+            document.getElementById('export-db-btn').addEventListener('click', exportDB);
+            document.getElementById('import-db-btn').addEventListener('click', () => {
+                document.getElementById('import-db-input').click();
+            });
+            document.getElementById('import-db-input').addEventListener('change', importDB);
+        }
+
+        function importDB(event) {
+            const file = event.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    try {
+                        const data = JSON.parse(e.target.result);
+                        console.log("Imported data:", data);
+
+                        if (Array.isArray(data.inventory) && Array.isArray(data.templates)) {
+                            const transaction = db.transaction(["inventory", "templates"], "readwrite");
+                            const inventoryStore = transaction.objectStore("inventory");
+                            const templatesStore = transaction.objectStore("templates");
+
+                            inventoryStore.clear();
+                            templatesStore.clear();
+
+                            data.inventory.forEach(item => {
+                                inventoryStore.add(item);
+                            });
+
+                            data.templates.forEach(template => {
+                                templatesStore.add(template);
+                            });
+
+                            transaction.oncomplete = function() {
+                                alert('Database imported successfully!');
+                                // Refresh the app with the new data
+                                const inventoryContainer = document.getElementById('inventory-table-container');
+                                const jobTemplatesContainer = document.getElementById('job-templates-container');
+
+                                const inventoryTable = new InventoryTable();
+                                inventoryTable.render(inventoryContainer);
+
+                                const jobTemplates = new JobTemplates();
+                                jobTemplates.render(jobTemplatesContainer);
+                            };
+                        } else {
+                            throw new Error("Invalid data format");
+                        }
+                    } catch (error) {
+                        console.error("Error importing database:", error);
+                        alert("Failed to import database. Please check the file format.");
+                    }
+                };
+                reader.readAsText(file);
+            }
+        }
+
+        // Wait for the database to be ready before initializing the app
+        const checkDBReady = setInterval(() => {
+            if (typeof db !== 'undefined' && dbReady) {
+                clearInterval(checkDBReady);
+                initApp();
+            }
+        }, 100);
+    </script>
+</body>
+</html>

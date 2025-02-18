@@ -1,0 +1,196 @@
+body {
+  font-family: Arial, sans-serif;
+  margin: 0;
+  padding: 0;
+  background-color: rgb(237, 237, 237);
+  color: #333;
+}
+
+header {
+  background-color: rgb(237, 237, 237);
+  color: black;
+  padding: 10px 20px;
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+}
+
+#logo {
+  height: 60px;
+  margin-right: 20px;
+}
+
+header h1 {
+  margin: 0;
+  font-size: 24px;
+}
+
+section {
+  padding: 20px;
+  margin: 20px;
+  background-color: white;
+  border-radius: 8px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+h2 {
+  color: #82734B;
+  border-bottom: 2px solid #82734B;
+  padding-bottom: 5px;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 20px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+th, td {
+  border: 1px solid #ddd;
+  padding: 12px;
+  text-align: left;
+}
+
+th {
+  background-color: #f2f2f2;
+}
+
+.qty-btn, .remove-btn, .remove-part-btn, .remove-template-btn, .build-btn, .approve-btn, .add-part-btn {
+  padding: 8px 12px;
+  margin: 2px;
+  cursor: pointer;
+  background-color: #82734B;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  transition: background-color 0.3s ease;
+}
+
+.qty-btn:hover, .remove-btn:hover, .remove-part-btn:hover, .remove-template-btn:hover, .approve-btn:hover, .build-btn:hover, .add-part-btn:hover {
+  background-color: #6e5f3f;
+}
+
+.qty-value {
+  margin: 0 10px;
+}
+
+#inventory-controls, #template-controls {
+  margin-bottom: 20px;
+  display: flex;
+  gap: 10px;
+}
+
+#inventory-controls input, #template-controls input {
+  padding: 10px;
+  width: calc(25% - 10px);
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  font-size: 16px;
+}
+
+#add-inventory-btn, #add-template-btn, .add-part-btn, .build-btn, .approve-btn {
+  padding: 10px 20px;
+  cursor: pointer;
+  background-color: #82734B;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  font-size: 16px;
+  transition: background-color 0.3s ease;
+}
+
+#add-inventory-btn:hover, #add-template-btn:hover, .add-part-btn:hover, .build-btn:hover, .approve-btn:hover {
+  background-color: #6e5f3f;
+}
+
+.template {
+  border: 1px solid #ddd;
+  padding: 20px;
+  margin-bottom: 20px;
+  border-radius: 8px;
+  background-color: white;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+.template-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 10px;
+}
+
+.template-name {
+  font-weight: bold;
+  font-size: 18px;
+  flex-grow: 1;
+}
+
+.template-details {
+  margin-top: 20px;
+  transition: max-height 0.3s ease;
+  overflow: hidden;
+}
+
+.template-details.hidden {
+  max-height: 0;
+}
+
+.template-details table {
+  margin-top: 20px;
+}
+
+#db-controls {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  gap: 10px;
+  margin-left: auto; /* Push the container to the far right */
+  margin-right: 20px;
+}
+
+#import-db-input {
+  display: none;
+}
+
+button {
+  padding: 10px 20px;
+  cursor: pointer;
+  background-color: #82734B;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  font-size: 16px;
+  font-weight: bold; /* Make the text bold */
+  transition: background-color 0.3s ease;
+}
+
+button:hover {
+  background-color: #6e5f3f;
+}
+
+/* Style for enabled buttons */
+.build-btn:enabled, .approve-btn:enabled {
+  background-color: #82734B; /* Active button color */
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  cursor: pointer;
+  font-weight: bold;
+  border-radius: 4px;
+  transition: background-color 0.3s ease;
+}
+
+/* Style for disabled buttons */
+.build-btn:disabled, .approve-btn:disabled {
+  background-color: #cccccc; /* Disabled button color */
+  color: #666666;
+  cursor: not-allowed;
+  opacity: 0.6; /* Slightly transparent to indicate it's disabled */
+}
+
+/* Hover effect for enabled buttons */
+.build-btn:enabled:hover, .approve-btn:enabled:hover {
+  background-color: #6e5f3f; /* Darker shade for hover effect */
+}
+

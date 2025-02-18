@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>KIMS - Job Layout</title>
+    <link rel="icon" type="image/x-icon" href="images/poker.ico">
+    <link rel="stylesheet" href="css/styles.css">
+    <script src="https://cdn.jsdelivr.net/pyodide/v0.21.3/full/pyodide.js"></script>
+</head>
+<body>
+    <div id="app">
+        <header>
+            <img src="images/kestell.png" alt="Kestell Logo" id="logo">
+            <h1>Kestell Inventory Management System</h1>
+            <div id="db-controls">
+                <button id="export-db-btn">Export DB</button>
+            </div>
+        </header>
+
+        <section>
+            <h2>Job Layout</h2>
+            <div id="job-layout-container">
+                <div id="controls">
+                    <button class="approve-btn" disabled id="approve-button">Approve Build</button>
+                </div>
+                <canvas id="layout-canvas" width="1200" height="800" style="border:1px solid #000000;"></canvas>
+            </div>
+        </section>
+    </div>
+    <script src="js/pyodide.js"></script>
+    <script src="js/database.js"></script>
+    <script src="js/jzip.js"></script>
+    <script src="js/drawing.js"></script>
+    <script src="js/inventoryTable.js"></script>
+    <script src="js/build.js"></script>
+    <script>
+        document.getElementById('export-db-btn').addEventListener('click', exportDB);
+        document.addEventListener('DOMContentLoaded', () => {
+            const canvas = document.getElementById('layout-canvas');
+            const approveButton = document.getElementById('approve-button');
+
+            // Add click event listener to the canvas only once
+            canvas.addEventListener('click', handleCanvasClick);
+        
+            // Add click event listener to the approve button
+            approveButton.addEventListener('click', () => {
+                // Navigate back to main page
+                approveBuild();
+            });
+                
+            // Initial draw
+            drawLayoutOnCanvas();
+            // Wait for the database to be ready before initializing the app
+            const checkpyodideReady = setInterval(() => {
+                if (pyodideReady) {
+                    clearInterval(checkpyodideReady);
+                    // Enable approve build button
+                    document.querySelectorAll('.approve-btn').forEach(button => {
+                        button.disabled = !pyodideReady; // Enable if Pyodide is ready
+                    });
+                }
+            }, 100);
+        });
+    </script>
+</body>
+</html>
