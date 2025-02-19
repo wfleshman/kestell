@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>KIMS - Multi-Build</title>
+    <link rel="icon" type="image/x-icon" href="images/poker.ico">
+    <link rel="stylesheet" href="css/styles.css">
+    <script src="https://cdn.jsdelivr.net/pyodide/v0.21.3/full/pyodide.js"></script>
+</head>
+<body>
+    <div id="app">
+        <header>
+            <img src="images/kestell.png" alt="Kestell Logo" id="logo">
+            <h1>Kestell Inventory Management System</h1>
+            <div id="db-controls">
+            </div>
+        </header>
+
+        <div class="main-content">
+            <aside class="functions-section">
+                <h2>Functions</h2>
+                <div id="db-controls">
+                    <button id="multi-build-btn">Home</button>
+                    <button id="export-db-btn">Export DB</button>
+                    <input type="file" id="import-db-input" style="display: none;">
+                    <button id="import-db-btn">Import DB</button>
+                </div>
+            </aside>
+            <div class="content-sections">
+                <section>
+                    <h2>Selected Templates</h2>
+                    <button id="m-build-btn" disabled>Build</button>
+                    <button id="max-inv-btn" disabled> Maximize Inventory</button>
+                    <div id="selected-templates-container"></div>
+                </section>
+                <section>
+                        <h2>Available Templates</h2>
+                        <div id="multi-builder-controls">
+                            <input type="text" id="search-templates" placeholder="Search Templates...">
+                        </div>
+                        <div id="templates-container"></div>
+                </section>
+            </div>
+        </div>
+    </div>
+    <script src="js/database.js"></script>    
+    <script src="js/pyodide.js"></script>
+    <script src="js/packing.js"></script>
+    <script src="js/multiBuilder.js"></script>
+    <script>
+        let dbReady = false;
+
+        function initApp() {
+            // initialize multi-builder app
+            const multiBuilder = new MultiBuilder();
+            multiBuilder.render(document.getElementById('templates-container'));
+
+            document.getElementById('search-templates').addEventListener('input', () => {
+                multiBuilder.filterTemplates(document.getElementById('search-templates').value);
+            });
+
+            document.getElementById('export-db-btn').addEventListener('click', exportDB);
+            document.getElementById('import-db-btn').addEventListener('click', () => {
+                document.getElementById('import-db-input').click();
+            });
+            document.getElementById('import-db-input').addEventListener('change', importDB);
+            document.getElementById('multi-build-btn').addEventListener('click', () => {
+                window.location.href = 'index.html';
+            });
+            document.getElementById('m-build-btn').addEventListener('click', () => {
+                multiBuilder.handleBuild();
+            });            
+            document.getElementById('max-inv-btn').addEventListener('click', () => {
+                multiBuilder.maxInventory();
+            });
+
+        }
+        function importDB(event) {
+            const file = event.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    try {
+                        const data = JSON.parse(e.target.result);
+                        console.log("Imported data:", data);
+
+                        if (Array.isArray(data.inventory) && Array.isArray(data.templates)) {
+                            const transaction = db.transaction(["inventory", "templates"], "readwrite");
+                            const inventoryStore = transaction.objectStore("inventory");
+                            const templatesStore = transaction.objectStore("templates");
+
+                            inventoryStore.clear();
+                            templatesStore.clear();
+
+                            data.inventory.forEach(item => {
+                                inventoryStore.add(item);
+                            });
+
+                            data.templates.forEach(template => {
+                                templatesStore.add(template);
+                            });
+
+                            transaction.oncomplete = function() {
+                                alert('Database imported successfully!');
+                                // Refresh the app with the new data
+                                const inventoryContainer = document.getElementById('inventory-table-container');
+                                const jobTemplatesContainer = document.getElementById('job-templates-container');
+
+                                const inventoryTable = new InventoryTable();
+                                inventoryTable.render(inventoryContainer);
+
+                                const jobTemplates = new JobTemplates();
+                                jobTemplates.render(jobTemplatesContainer);
+                            };
+                        } else {
+                            throw new Error("Invalid data format");
+                        }
+                    } catch (error) {
+                        console.error("Error importing database:", error);
+                        alert("Failed to import database. Please check the file format.");
+                    }
+                };
+                reader.readAsText(file);
+            }
+        }
+
+        // Wait for the database to be ready before initializing the app
+        const checkDBReady = setInterval(() => {
+            if (typeof db !== 'undefined' && dbReady) {
+                clearInterval(checkDBReady);
+                initApp();
+                // Wait for pyodide to be ready
+                const checkPy = setInterval(() => {
+                    if (pyodideReady) {
+                        clearInterval(checkPy);
+                        const build = document.getElementById('m-build-btn');
+                        build.disabled = false;
+                        const max = document.getElementById('max-inv-btn');
+                        max.disabled = false;                        
+                    }
+                }, 100);
+            }
+        }, 100);
+    </script>
+</body>
+</html>
