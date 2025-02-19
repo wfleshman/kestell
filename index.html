@@ -56,6 +56,11 @@
         let dbReady = false;
 
         function initApp() {
+            if (document.readyState === 'loading') {
+                document.addEventListener('DOMContentLoaded',initApp());
+                console.log("Waiting for DOM...");
+                return;
+              } 
             const inventoryContainer = document.getElementById('inventory-table-container');
             const jobTemplatesContainer = document.getElementById('job-templates-container');
 

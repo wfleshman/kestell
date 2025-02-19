@@ -52,6 +52,11 @@
         let dbReady = false;
 
         function initApp() {
+            if (document.readyState === 'loading') {
+                document.addEventListener('DOMContentLoaded',initApp());
+                console.log("Waiting for DOM...");
+                return;
+              } 
             // initialize multi-builder app
             const multiBuilder = new MultiBuilder();
             multiBuilder.render(document.getElementById('templates-container'));
