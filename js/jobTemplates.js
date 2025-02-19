@@ -108,8 +108,8 @@ class JobTemplates {
     toggleDetails(event) {
         const index = event.target.dataset.index;
         const details = document.querySelectorAll('.template-details');
-        details.forEach((detail, i) => {
-            if (i == index) {
+        details.forEach(detail => {
+            if (detail.dataset.index == index) {
                 detail.classList.toggle('hidden');
             } else {
                 detail.classList.add('hidden');
