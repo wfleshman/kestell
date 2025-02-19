@@ -18,7 +18,6 @@ function approveBuild() {
         let sheets = JSON.parse(localStorage.getItem('sheets'));
         sheets.forEach((sheet, sheetIdx) => {
             // create dfx file
-            console.log("Running python...");
             const dxf = pyodide.runPython(`
                 import ezdxf
                 from ezdxf import units
@@ -93,12 +92,15 @@ function approveBuild() {
             });
 
             // remove sheet from inventory
-            function check_existing(item){
-                let existingItem = inventoryData.find(existing => existing.width === item.width && existing.height === item.height);
-                return existingItem;
-            }
-            let idx = inventoryData.findIndex(check_existing);
+            let idx;
+            inventoryData.forEach((sht, i) => {
+                if (sheet.width === sht.width && sheet.height === sht.height){
+                    idx = i;
+                }
+            });
+            
             inventoryData[idx].qty -= 1;
+
             if (inventoryData[idx].qty === 0){
                 inventoryData.splice(idx, 1);
             };

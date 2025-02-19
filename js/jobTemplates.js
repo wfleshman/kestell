@@ -168,10 +168,15 @@ class JobTemplates {
             { type: 'circle', diameter: displayWidth, qty };
 
         // Check if a part with the same dimensions and shape type already exists
-        const existingShape = template.shapes.find(existing =>
-            existing.width === shape.width &&
-            existing.height === shape.height
-        );
+        let existingShape;
+        if (shape.type === 'rectangle'){
+            existingShape = template.shapes.find(existing =>
+                existing.width === shape.width &&
+                existing.height === shape.height);
+            } else {
+            existingShape = template.shapes.find(existing =>
+                existing.diameter === shape.diamter);
+        }
 
         if (existingShape) {
             existingShape.qty += shape.qty;

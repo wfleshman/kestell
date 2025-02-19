@@ -13,6 +13,9 @@ header {
   display: flex;
   align-items: center;
   justify-content: flex-start;
+  position: sticky;
+  top: 0;
+  z-index: 1000;
 }
 
 #logo {
@@ -20,9 +23,64 @@ header {
   margin-right: 20px;
 }
 
+#search-templates, #template-name-input {
+  width: 100%;
+  padding: 10px;
+  margin-bottom: 20px;
+  font-size: 16px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  box-sizing: border-box;
+}
+
 header h1 {
   margin: 0;
   font-size: 24px;
+}
+
+.main-content {
+  display: flex;
+  align-items: flex-start;
+}
+
+.functions-section {
+  height: 250px;
+  width: 200px;
+  padding: 20px;
+  background-color: white;
+  border-radius: 8px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  position: fixed;
+  overflow-y: auto;
+  margin-right: 20px;
+  margin-left: 20px;
+  margin-top: 20px;
+  margin-bottom: 20px;
+}
+
+.functions-section h2 {
+  margin-top: 0;
+  color: #82734B;
+  border-bottom: 2px solid #82734B;
+  padding-bottom: 5px;
+}
+
+.functions-section #db-controls {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-top: 20px;
+}
+
+.content-sections {
+  flex-grow: 1;
+  padding: 20px;
+  margin-left: 240px;
+  padding-top: 0;
+}
+
+.content-sections h2 {
+  margin-top: 0;
 }
 
 section {
@@ -56,7 +114,16 @@ th {
   background-color: #f2f2f2;
 }
 
-.qty-btn, .remove-btn, .remove-part-btn, .remove-template-btn, .build-btn, .approve-btn, .add-part-btn {
+.qty-btn, 
+.remove-btn, 
+.remove-part-btn, 
+.remove-template-btn, 
+.build-btn, 
+#m-build-btn, 
+.approve-btn, 
+.add-part-btn, 
+.multi.build-btn, 
+.add-template-btn {
   padding: 8px 12px;
   margin: 2px;
   cursor: pointer;
@@ -67,7 +134,16 @@ th {
   transition: background-color 0.3s ease;
 }
 
-.qty-btn:hover, .remove-btn:hover, .remove-part-btn:hover, .remove-template-btn:hover, .approve-btn:hover, .build-btn:hover, .add-part-btn:hover {
+.qty-btn:hover, 
+.remove-btn:hover, 
+.remove-part-btn:hover, 
+.remove-template-btn:hover, 
+.approve-btn:hover, 
+.build-btn:hover, 
+#m-build-btn:hover, 
+.add-part-btn:hover, 
+.multi.build-btn:hover, 
+.add-template-btn:hover {
   background-color: #6e5f3f;
 }
 
@@ -76,7 +152,6 @@ th {
 }
 
 #inventory-controls, #template-controls {
-  margin-bottom: 20px;
   display: flex;
   gap: 10px;
 }
@@ -89,7 +164,13 @@ th {
   font-size: 16px;
 }
 
-#add-inventory-btn, #add-template-btn, .add-part-btn, .build-btn, .approve-btn {
+#add-inventory-btn, 
+#add-template-btn, 
+.add-part-btn, 
+.build-btn, 
+.approve-btn, 
+.multi.build-btn,
+#max-inv-btn {
   padding: 10px 20px;
   cursor: pointer;
   background-color: #82734B;
@@ -100,14 +181,57 @@ th {
   transition: background-color 0.3s ease;
 }
 
-#add-inventory-btn:hover, #add-template-btn:hover, .add-part-btn:hover, .build-btn:hover, .approve-btn:hover {
+#add-inventory-btn:hover, 
+#add-template-btn:hover, 
+.add-part-btn:hover, 
+.build-btn:hover, 
+#m-build-btn:hover, 
+.approve-btn:hover, 
+.multi.build-btn:hover,
+#max-inv-btn:hover {
+  background-color: #6e5f3f;
+}
+
+/* Style for enabled buttons */
+.multi.build-btn:enabled, 
+.build-btn:enabled, 
+#m-build-btn:enabled, 
+.approve-btn:enabled,
+#max-inv-btn:enabled {
+  background-color: #82734B;
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  cursor: pointer;
+  font-weight: bold;
+  border-radius: 4px;
+  transition: background-color 0.3s ease;
+}
+
+/* Style for disabled buttons */
+.multi.build-btn:disabled, 
+.build-btn:disabled, 
+#m-build-btn:disabled, 
+.approve-btn:disabled,
+#max-inv-btn:disabled {
+  background-color: #cccccc;
+  color: #666666;
+  cursor: not-allowed;
+  opacity: 0.6;
+}
+
+/* Hover effect for enabled buttons */
+.multi.build-btn:enabled:hover, 
+.build-btn:enabled:hover, 
+#m-build-btn:enabled:hover, 
+.approve-btn:enabled:hover,
+#max-inv-btn:enabled:hover {
   background-color: #6e5f3f;
 }
 
 .template-container {
-  height: 300px; /* Adjust the height as needed */
-  overflow-y: scroll;
-  border: 1px solid #ccc; /* Optional: Add a border for better visibility */
+  max-height: 400px;
+  overflow-y: auto;
 }
 
 .template {
@@ -138,8 +262,13 @@ th {
   overflow: hidden;
 }
 
+.template-qty {
+  margin-right: 10px;
+}
+
 .template-details.hidden {
   max-height: 0;
+  overflow: hidden;
 }
 
 .template-details table {
@@ -151,7 +280,7 @@ th {
   justify-content: flex-end;
   align-items: center;
   gap: 10px;
-  margin-left: auto; /* Push the container to the far right */
+  margin-left: auto;
   margin-right: 20px;
 }
 
@@ -160,6 +289,7 @@ th {
 }
 
 button {
+  max-height: 40px;
   padding: 10px 20px;
   cursor: pointer;
   background-color: #82734B;
@@ -167,7 +297,7 @@ button {
   border: none;
   border-radius: 4px;
   font-size: 16px;
-  font-weight: bold; /* Make the text bold */
+  font-weight: bold;
   transition: background-color 0.3s ease;
 }
 
@@ -175,28 +305,6 @@ button:hover {
   background-color: #6e5f3f;
 }
 
-/* Style for enabled buttons */
-.build-btn:enabled, .approve-btn:enabled {
-  background-color: #82734B; /* Active button color */
-  color: white;
-  border: none;
-  padding: 10px 20px;
-  cursor: pointer;
-  font-weight: bold;
-  border-radius: 4px;
-  transition: background-color 0.3s ease;
+#m-build-btn {
+  margin-bottom: 5px;
 }
-
-/* Style for disabled buttons */
-.build-btn:disabled, .approve-btn:disabled {
-  background-color: #cccccc; /* Disabled button color */
-  color: #666666;
-  cursor: not-allowed;
-  opacity: 0.6; /* Slightly transparent to indicate it's disabled */
-}
-
-/* Hover effect for enabled buttons */
-.build-btn:enabled:hover, .approve-btn:enabled:hover {
-  background-color: #6e5f3f; /* Darker shade for hover effect */
-}
-

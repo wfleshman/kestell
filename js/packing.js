@@ -231,7 +231,6 @@ function performBinPacking(template, inventory) {
     sheets.forEach(sheet => {
         built += sheet.parts.length;
     });
-    console.log(built);
     if (total === built) {
         return sheets;
     } else {return null;}
