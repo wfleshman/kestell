@@ -196,6 +196,7 @@ class MultiBuilder {
                         used += (part.width * part.width);
                     } else{used += (part.height * part.width)}
                 });
+ 
             });
             return used / total;
         };
