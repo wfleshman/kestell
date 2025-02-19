@@ -1,4 +1,5 @@
 let db;
+let dbReady = false;
 
 function openDatabase() {
     const request = indexedDB.open("KIMSDatabase", 1);
