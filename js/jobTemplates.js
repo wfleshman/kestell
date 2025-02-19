@@ -6,6 +6,7 @@ class JobTemplates {
 
     render(parent) {
         this.parent = parent;
+        this.parent.classList.add('template-container');
         this.templates.sort((a, b) => a.name.localeCompare(b.name)); // Sort alphabetically
         parent.innerHTML = ''; // Clear the parent container before rendering
         this.templates.forEach((template, index) => {

@@ -104,6 +104,12 @@ th {
   background-color: #6e5f3f;
 }
 
+.template-container {
+  height: 300px; /* Adjust the height as needed */
+  overflow-y: scroll;
+  border: 1px solid #ccc; /* Optional: Add a border for better visibility */
+}
+
 .template {
   border: 1px solid #ddd;
   padding: 20px;
