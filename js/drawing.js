@@ -99,7 +99,8 @@ function drawLayoutOnCanvas() {
 
     // Draw each sheet
     let currentCumulativeHeight = 0;
-    sheets.forEach((sheet, sheetIndex) => {
+    for (let sheetIndex = sheets.length - 1; sheetIndex >= 0; sheetIndex--) {
+        let sheet = sheets[sheetIndex];
         // Draw sheet background (optional)
         ctx.fillStyle = '#f0f0f0';
         ctx.fillRect(10, 10 + currentCumulativeHeight, sheet.width * scale, sheet.height * scale);
@@ -107,22 +108,22 @@ function drawLayoutOnCanvas() {
 
         // Add a label to each sheet for its width and height at the bottom right corner
         ctx.fillStyle = '#000000'; // Use a contrasting color for text
-        ctx.font = '16px Arial'; // Set a fixed font size
+        ctx.font = '12px Arial'; // Set a fixed font size
         let sheetLabel = `${sheet.width.toFixed(2)}" x ${sheet.height.toFixed(2)}"`;
-        const labelX = 20 + 10 + sheet.width * scale; // Align left edge of text with right edge of sheet
+        const labelX = 15 + 10 + sheet.width * scale; // Align left edge of text with right edge of sheet
         let labelY = 10 + currentCumulativeHeight + sheet.height * scale; // Align bottom of text with bottom of sheet
         ctx.textAlign = 'left';
         ctx.textBaseline = 'bottom';
         ctx.fillText(sheetLabel, labelX, labelY);
         // Add utilization information
         sheetLabel = `Waste: ${sheet.scrap_util}%`;
-        labelY -= 20;
+        labelY -= 15;
         ctx.fillText(sheetLabel, labelX, labelY);
         sheetLabel = `Stock Utilization: ${sheet.keep_util}%`;
-        labelY -= 20;
+        labelY -= 15;
         ctx.fillText(sheetLabel, labelX, labelY);
         sheetLabel = `Part Utilization: ${sheet.part_util}%`;
-        labelY -= 20;
+        labelY -= 15;
         ctx.fillText(sheetLabel, labelX, labelY);        
 
         // Draw scraps without labels inside
@@ -147,7 +148,7 @@ function drawLayoutOnCanvas() {
 
         // Update the cumulative height for the next sheet
         currentCumulativeHeight += sheet.height * scale + 50; // Increased spacing between sheets
-    });
+    }
 
     // Draw the legend
     drawLegend(canvas, ctx, colors);

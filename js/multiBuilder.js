@@ -193,10 +193,9 @@ class MultiBuilder {
             sheets.forEach(sheet => {
                 sheet.parts.forEach(part => {
                     if (part.height === 0){ // check circle
-                        used += (part.width * part.width);
+                        used += Math.PI * (part.width * part.width)/4;
                     } else{used += (part.height * part.width)}
                 });
- 
             });
             return used / total;
         };
@@ -214,6 +213,9 @@ class MultiBuilder {
                     best_score = score;
                     best_templates = [...templates];
                 }
+            }
+            if (templates.length === 5){
+                return; // too many templates
             }
             available.forEach((template, idx) => {
                 if (idx >= startIndex){
