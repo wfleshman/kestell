@@ -45,13 +45,16 @@ function approveBuild() {
                 sheet = ${JSON.stringify(sheets)}[${sheetIdx}]
                 add_rect(msp, "Sheet", 0, 0, sheet['width'], sheet['height'])
                 cuts = set()
-                for (shapes,layer) in [('parts','Panels'),('keeps','Stock'),('scraps','Remnants')]:
+                for (shapes, layer) in [('parts','Panels'),('keeps','Stock'),('scraps','Remnants')]:
                     for part in sheet[shapes]:
                         if part['height'] == 0:
                             add_circle(msp, layer, (part['x'], part['y']), part['width'])
-                            add_circle(msp, 'Cuts', (part['x'], part['y']), part['width'])
+                            if shapes in ['parts', 'keeps']:
+                                add_circle(msp, 'Cuts', (part['x'], part['y']), part['width'])
                         else:
                             add_rect(msp, layer, part['x'], part['y'], part['width'], part['height'])
+                            if shapes == 'scraps':
+                                continue
                             path1 = (part['x'], part['y'], part['x']+part['width'], part['y'])
                             path2 = (part['x']+part['width'], part['y'], part['x']+part['width'], part['y']+part['height'])
                             path3 = (part['x'], part['y']+part['height'], part['x']+part['width'], part['y']+part['height'])
