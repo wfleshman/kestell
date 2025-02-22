@@ -108,12 +108,22 @@ function drawLayoutOnCanvas() {
         // Add a label to each sheet for its width and height at the bottom right corner
         ctx.fillStyle = '#000000'; // Use a contrasting color for text
         ctx.font = '16px Arial'; // Set a fixed font size
-        const sheetLabel = `${sheet.width.toFixed(2)}" x ${sheet.height.toFixed(2)}"`;
-        const labelX = 10 + sheet.width * scale; // Align left edge of text with right edge of sheet
-        const labelY = 10 + currentCumulativeHeight + sheet.height * scale; // Align bottom of text with bottom of sheet
+        let sheetLabel = `${sheet.width.toFixed(2)}" x ${sheet.height.toFixed(2)}"`;
+        const labelX = 20 + 10 + sheet.width * scale; // Align left edge of text with right edge of sheet
+        let labelY = 10 + currentCumulativeHeight + sheet.height * scale; // Align bottom of text with bottom of sheet
         ctx.textAlign = 'left';
         ctx.textBaseline = 'bottom';
         ctx.fillText(sheetLabel, labelX, labelY);
+        // Add utilization information
+        sheetLabel = `Waste: ${sheet.scrap_util}%`;
+        labelY -= 20;
+        ctx.fillText(sheetLabel, labelX, labelY);
+        sheetLabel = `Stock Utilization: ${sheet.keep_util}%`;
+        labelY -= 20;
+        ctx.fillText(sheetLabel, labelX, labelY);
+        sheetLabel = `Part Utilization: ${sheet.part_util}%`;
+        labelY -= 20;
+        ctx.fillText(sheetLabel, labelX, labelY);        
 
         // Draw scraps without labels inside
         drawAndLabelShapes(sheet.scraps, colors.scraps, false);

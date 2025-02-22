@@ -206,7 +206,7 @@ function performBinPacking(template, inventory) {
         
             sheets.append(sheet)
 
-        for i,sheet in enumerate(sheets):
+        for i, sheet in enumerate(sheets):
             rects = [(shape['x'], shape['y'], shape['width'], shape['height']) for shape in sheet['parts']+sheet['scraps'] if shape['height'] != 0]
             remaining = remove_overlapping_regions(find_maximal_rectangles(sheet['width'], sheet['height'], rects))
             for (x,y,w,h) in remaining:
@@ -215,6 +215,10 @@ function performBinPacking(template, inventory) {
                     sheets[i]['keeps'].append(shape)
                 else:
                     sheets[i]['scraps'].append(shape)
+            area = sheet['width'] * sheet['height']
+            sheet['part_util'] = round(100 * sum([p['width']*p['height'] for p in sheet['parts']]) / area, 1)
+            sheet['keep_util'] = round(100 * sum([p['width']*p['height'] for p in sheet['keeps']]) / area, 1)
+            sheet['scrap_util'] = round(100 * sum([p['width']*p['height'] for p in sheet['scraps']]) / area, 1)
         sheets
     `);
     const sheets = packingResult.toJs().map(map => Object.fromEntries(map));
